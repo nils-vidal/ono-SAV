@@ -24,15 +24,17 @@ let sleep (seconds : Kdo.Concrete.F32.t) : (unit, _) Result.t =
   Ok ()
 
 let print_cell (cell_id : Kdo.Concrete.I32.t) : (unit, _) Result.t =
-  Logs.app (fun m -> m "%a" Kdo.Concrete.I32.pp cell_id);
+  let alive = Kdo.Concrete.I32.to_int cell_id <> 0 in
+  Printf.printf "%s%!" (if alive then "🌸" else "☠️");
+  Unix.sleepf 0.00005;
   Ok ()
 
 let newline () : (unit, _) Result.t =
-  Logs.app (fun m -> m "\n");
+  Printf.printf "\n%!";
   Ok ()
 
 let clear_screen () : (unit, _) Result.t =
-  Logs.app (fun m -> m "\027[2J\027[H");
+  Printf.printf "\027[H\027[J%!";
   Ok ()
 
 let m =

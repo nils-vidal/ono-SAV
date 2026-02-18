@@ -3,11 +3,7 @@ module Interpret = Kdo.Interpret.Concrete (Kdo.Interpret.Default_parameters)
 
 let run ~source_file ~seed =
   (* generate seed *)
-  (
-    if (seed <> 0) 
-    then Random.init seed 
-    else Random.self_init ()
-  );
+  if seed <> 0 then Random.init seed else Random.self_init ();
   (* Parsing. *)
   Logs.info (fun m -> m "Parsing file %a..." Fpath.pp source_file);
   let* wat_module = Kdo.Parse.Wat.Module.from_file source_file in

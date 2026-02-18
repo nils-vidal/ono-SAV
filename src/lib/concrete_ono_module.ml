@@ -12,6 +12,12 @@ let random_i32 () : (Kdo.Concrete.I32.t, _) Result.t =
   let random_int = Random.int32 Int32.max_int in
   Ok (Kdo.Concrete.I32.of_int32 random_int)
 
+let random_i32_bounded (upperBound : Kdo.Concrete.I32.t) :
+    (Kdo.Concrete.I32.t, _) Result.t =
+  let upperBound = Kdo.Concrete.I32.to_int upperBound |> Int32.of_int in
+  let random_int = Random.int32 upperBound in
+  Ok (Kdo.Concrete.I32.of_int32 random_int)
+
 let sleep (seconds : Kdo.Concrete.F32.t) : (unit, _) Result.t =
   let seconds_float = Kdo.Concrete.F32.to_float seconds in
   Unix.sleepf seconds_float;
@@ -41,6 +47,7 @@ let m =
       ("print_cell", Extern_func (i32 ^->. unit, print_cell));
       ("newline", Extern_func (unit ^->. unit, newline));
       ("clear_screen", Extern_func (unit ^->. unit, clear_screen));
+      ("random_i32_bounded", Extern_func (i32 ^->. i32, random_i32_bounded));
     ]
   in
   {

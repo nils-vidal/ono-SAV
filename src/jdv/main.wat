@@ -4,7 +4,9 @@
     (func $newline (import "ono" "newline"))
     (func $clear_screen (import "ono" "clear_screen"))
     (func $print_i32 (import "ono" "print_i32") (param i32))
+    (func $print_i64 (import "ono" "print_i64") (param i64))
     (func $random_i32_bounded (import "ono" "random_i32_bounded") (param i32) (result i32))
+    (func $read_int (import "ono" "read_int") (result i64))
     
     (global $w i32 (i32.const 40))
     (global $h i32 (i32.const 30))

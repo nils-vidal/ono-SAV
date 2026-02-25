@@ -37,6 +37,11 @@ let clear_screen () : (unit, _) Result.t =
   Printf.printf "\027[H\027[J%!";
   Ok ()
 
+let read_int () : (Kdo.Concrete.I64.t, _) Result.t =
+  let input = read_int () in
+  let i64 = Int64.of_int input in
+  Ok (Kdo.Concrete.I64.of_int64 i64)
+
 let m =
   let open Kdo.Concrete.Extern_func in
   let open Kdo.Concrete.Extern_func.Syntax in
@@ -50,6 +55,7 @@ let m =
       ("newline", Extern_func (unit ^->. unit, newline));
       ("clear_screen", Extern_func (unit ^->. unit, clear_screen));
       ("random_i32_bounded", Extern_func (i32 ^->. i32, random_i32_bounded));
+      ("read_int", Extern_func (unit ^->. i64, read_int));
     ]
   in
   {

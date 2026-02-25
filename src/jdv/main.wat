@@ -8,6 +8,7 @@
     (func $random_i32_bounded (import "ono" "random_i32_bounded") (param i32) (result i32))
     (func $read_int (import "ono" "read_int") (result i64))
     (func $read_step (import "ono" "read_step") (result i32))
+    (func $read_number_line_to_print (import "ono" "read_number_line_to_print" (result i32)))
     
     (global $w i32 (i32.const 40))
     (global $h i32 (i32.const 30))
@@ -293,31 +294,59 @@
         )
     )
 
+    (func $draw (param $steps_max i32) (param $current_steps i32) (param $n_to_print i32)
+        (if
+            (i32.gt_u ;; condition => steps_max - current_steps > n_to_print
+                (
+                    local.get $steps_max
+                    local.get $current_steps
+                    i32.sub ;; steps_max - current_steps
+                )
+                (
+                    local.get $n_to_print
+                )
+            )
+            (then return) ;; then => on print pas
+            (else
+                call $print_grid
+            ) ;; else => on print
+        )
+    )
+
     (func $main
         (local $number_steps i32)
         (local $current_number_steps i32)
+        (local $n_to_print i32)
+        (local.set $n_to_print (call $read_number_line_to_print))
         (local.set $number_steps (call $read_step))
-        (local.set $current_number_steps (i32.const 0))
+        (local.set $current_number_steps (i32.const 1)) ;; =1 car si option --steps non précisé la boucle reste infine car 1 > 0 donc 1+x > 0, avec x le nombre de tour de boucle
 
 
         (call $fill_random)
-        (block $main_loop
+        (block $break_main_loop
             (loop $main_loop
-                (br_if $main_loop (i32.eq (local.get $current_number_steps) (local.get $number_steps)))
                 ;; for tests
 
+
+                ;; a remplacer la ligne call print_grind par un test de si n_to_print est > 0 && number_step > 0, si c'est le cas call $draw
                 (call $print_grid)
-                (call $print_i32 (local.get $current_number_steps))
                 (call $step)
                 (call $sleep (f32.const 1.0))
 
+                ;; test si fin, sinon +1 a current number step
+                (br_if $break_main_loop (i32.eq (local.get $current_number_steps) (local.get $number_steps)))
                 (local.set $current_number_steps (i32.add (local.get $current_number_steps) (i32.const 1)))
 
                 (br $main_loop)
             )
         )
+        
+        ;; affichage des n lignes demandé par l'user
+        (
+
+        )
     )
-    
+
     (start $main)
     
 )

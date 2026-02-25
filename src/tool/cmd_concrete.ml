@@ -11,7 +11,7 @@ let steps =
   let info = Arg.info [ "steps" ] in
   Arg.value (Arg.opt Arg.int 0 info)
 
-let max_printed = 
+let max_printed =
   let info = Arg.info [ "n_printed" ] in
   Arg.value (Arg.opt Arg.int 0 info)
 

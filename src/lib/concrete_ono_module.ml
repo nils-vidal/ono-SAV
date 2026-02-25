@@ -2,14 +2,17 @@ type extern_func = Kdo.Concrete.Extern_func.extern_func
 
 let step_number = ref 0
 let number_line_printed : int option ref = ref None
+
 exception InternalError of string
 
 let read_step () : (Kdo.Concrete.I32.t, _) Result.t =
   Ok (Kdo.Concrete.I32.of_int !step_number)
 
-let read_number_line_to_print () : (Kdo.Concrete.I32.t, _) Result.t = 
-  if (!number_line_printed = None) 
-  then raise (InternalError "Concrete_ono_module.read_number_line_to_print : read_step non précisé")
+let read_number_line_to_print () : (Kdo.Concrete.I32.t, _) Result.t =
+  if !number_line_printed = None then
+    raise
+      (InternalError
+         "Concrete_ono_module.read_number_line_to_print : read_step non précisé")
   else Ok (Kdo.Concrete.I32.of_int (Option.get !number_line_printed))
 
 let print_i32 (n : Kdo.Concrete.I32.t) : (unit, _) Result.t =
@@ -69,7 +72,8 @@ let m =
       ("random_i32_bounded", Extern_func (i32 ^->. i32, random_i32_bounded));
       ("read_int", Extern_func (unit ^->. i64, read_int));
       ("read_step", Extern_func (unit ^->. i32, read_step));
-      ("read_number_line_to_print", Extern_func (unit ^->. i32, read_number_line_to_print))
+      ( "read_number_line_to_print",
+        Extern_func (unit ^->. i32, read_number_line_to_print) );
     ]
   in
   {

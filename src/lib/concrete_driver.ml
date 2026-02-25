@@ -7,10 +7,12 @@ let run ~source_file ~seed ~steps ~m_print =
   (* getting number of steps wanted *)
   Concrete_ono_module.step_number := steps;
   (* getting number of last printing line wanted *)
-  if (steps == 0 && m_print != 0) 
-  then raise (Invalid_argument "l'option --n_printed doit être activés avec l'option --steps")
-  else Concrete_ono_module.number_line_printed := Some m_print; 
-  
+  if steps == 0 && m_print != 0 then
+    raise
+      (Invalid_argument
+         "l'option --n_printed doit être activés avec l'option --steps")
+  else Concrete_ono_module.number_line_printed := Some m_print;
+
   (* Parsing. *)
   Logs.info (fun m -> m "Parsing file %a..." Fpath.pp source_file);
   let* wat_module = Kdo.Parse.Wat.Module.from_file source_file in

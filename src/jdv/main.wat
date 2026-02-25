@@ -297,7 +297,7 @@
             
             (call $print_grid)
             (call $step)
-            (call $sleep (f32.const 120.0))
+            (call $sleep (f32.const 1.0))
             (br $main_loop)
         )
     )

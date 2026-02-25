@@ -7,6 +7,7 @@
     (func $print_i64 (import "ono" "print_i64") (param i64))
     (func $random_i32_bounded (import "ono" "random_i32_bounded") (param i32) (result i32))
     (func $read_int (import "ono" "read_int") (result i64))
+    (func $read_step (import "ono" "read_step") (result i32))
     
     (global $w i32 (i32.const 40))
     (global $h i32 (i32.const 30))
@@ -293,14 +294,27 @@
     )
 
     (func $main
+        (local $number_steps i32)
+        (local $current_number_steps i32)
+        (local.set $number_steps (call $read_step))
+        (local.set $current_number_steps (i32.const 0))
+
+
         (call $fill_random)
-        (loop $main_loop
-            ;; for tests
-            
-            (call $print_grid)
-            (call $step)
-            (call $sleep (f32.const 1.0))
-            (br $main_loop)
+        (block $main_loop
+            (loop $main_loop
+                (br_if $main_loop (i32.eq (local.get $current_number_steps) (local.get $number_steps)))
+                ;; for tests
+
+                (call $print_grid)
+                (call $print_i32 (local.get $current_number_steps))
+                (call $step)
+                (call $sleep (f32.const 1.0))
+
+                (local.set $current_number_steps (i32.add (local.get $current_number_steps) (i32.const 1)))
+
+                (br $main_loop)
+            )
         )
     )
     

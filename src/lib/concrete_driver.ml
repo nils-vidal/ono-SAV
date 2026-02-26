@@ -1,11 +1,19 @@
 open Syntax
 module Interpret = Kdo.Interpret.Concrete (Kdo.Interpret.Default_parameters)
 
-let run ~source_file ~seed ~steps =
+let run ~source_file ~seed ~steps ~m_print =
   (* generate seed *)
   if seed <> 0 then Random.init seed else Random.self_init ();
-  (* getting number of steps wanted*)
+  (* getting number of steps wanted *)
   Concrete_ono_module.step_number := steps;
+  (* getting number of last printing line wanted *)
+  if (steps <= 0 && m_print > 0) || m_print < 0 then
+    raise
+      (Invalid_argument
+         "l'option --n_printed doit être activés avec l'option --steps, les \
+          options --steps et --n_printed doivent avoir une valeur strictement \
+          positive !")
+  else Concrete_ono_module.number_line_printed := m_print;
 
   (* Parsing. *)
   Logs.info (fun m -> m "Parsing file %a..." Fpath.pp source_file);

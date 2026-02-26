@@ -1,9 +1,15 @@
 type extern_func = Kdo.Concrete.Extern_func.extern_func
 
-let step_number = ref 1
+let step_number = ref 0
+let number_line_printed : int ref = ref 0
+
+exception InternalError of string
 
 let read_step () : (Kdo.Concrete.I32.t, _) Result.t =
   Ok (Kdo.Concrete.I32.of_int !step_number)
+
+let read_number_line_to_print () : (Kdo.Concrete.I32.t, _) Result.t =
+  Ok (Kdo.Concrete.I32.of_int !number_line_printed)
 
 let print_i32 (n : Kdo.Concrete.I32.t) : (unit, _) Result.t =
   Logs.app (fun m -> m "%a" Kdo.Concrete.I32.pp n);
@@ -62,6 +68,8 @@ let m =
       ("random_i32_bounded", Extern_func (i32 ^->. i32, random_i32_bounded));
       ("read_int", Extern_func (unit ^->. i64, read_int));
       ("read_step", Extern_func (unit ^->. i32, read_step));
+      ( "read_number_line_to_print",
+        Extern_func (unit ^->. i32, read_number_line_to_print) );
     ]
   in
   {

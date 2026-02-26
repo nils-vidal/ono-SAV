@@ -1,7 +1,7 @@
 type extern_func = Kdo.Concrete.Extern_func.extern_func
 
 let step_number = ref 0
-let number_line_printed : int option ref = ref None
+let number_line_printed : int ref = ref 0
 
 exception InternalError of string
 
@@ -9,11 +9,7 @@ let read_step () : (Kdo.Concrete.I32.t, _) Result.t =
   Ok (Kdo.Concrete.I32.of_int !step_number)
 
 let read_number_line_to_print () : (Kdo.Concrete.I32.t, _) Result.t =
-  if !number_line_printed = None then
-    raise
-      (InternalError
-         "Concrete_ono_module.read_number_line_to_print : read_step non précisé")
-  else Ok (Kdo.Concrete.I32.of_int (Option.get !number_line_printed))
+  Ok (Kdo.Concrete.I32.of_int (!number_line_printed))
 
 let print_i32 (n : Kdo.Concrete.I32.t) : (unit, _) Result.t =
   Logs.app (fun m -> m "%a" Kdo.Concrete.I32.pp n);

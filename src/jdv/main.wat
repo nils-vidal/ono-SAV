@@ -8,7 +8,7 @@
     (func $random_i32_bounded (import "ono" "random_i32_bounded") (param i32) (result i32))
     (func $read_int (import "ono" "read_int") (result i64))
     (func $read_step (import "ono" "read_step") (result i32))
-    (func $read_number_line_to_print (import "ono" "read_number_line_to_print" (result i32)))
+    (func $read_number_line_to_print (import "ono" "read_number_line_to_print") (result i32))
     
     (global $w i32 (i32.const 40))
     (global $h i32 (i32.const 30))
@@ -101,12 +101,15 @@
         ;; retour implicite sur la derniere valeur de la pile qui est l'addition de tous les appels de is_alive
     )
 
-    (func $print_grid
+    (func $print_grid (param $clear i32)
         (local $row i32)
         (local $col i32)
         (local $is_cur_cell_alive i32)
-        
-        (call $clear_screen)
+         
+        (if
+            (local.get $clear) ;; (clear = 0) => on clear pas le screen  
+            (then (call $clear_screen))
+        )
 
         (local.set $row (i32.const 0))
         (block $break_row
@@ -296,19 +299,18 @@
 
     (func $draw (param $steps_max i32) (param $current_steps i32) (param $n_to_print i32)
         (if
-            (i32.gt_u ;; condition => steps_max - current_steps > n_to_print
-                (
-                    local.get $steps_max
-                    local.get $current_steps
-                    i32.sub ;; steps_max - current_steps
+            (i32.ge_u ;; condition => steps_max - current_steps > n_to_print
+                (i32.sub ;; steps_max - current_steps
+                    (local.get $steps_max)
+                    (local.get $current_steps)
                 )
-                (
-                    local.get $n_to_print
-                )
+                (local.get $n_to_print)
             )
             (then return) ;; then => on print pas
             (else
-                call $print_grid
+                (call $print_grid (i32.const 0))
+                (call $sleep (f32.const 0.5))
+                (call $newline)
             ) ;; else => on print
         )
     )
@@ -328,10 +330,25 @@
                 ;; for tests
 
 
-                ;; a remplacer la ligne call print_grind par un test de si n_to_print est > 0 && number_step > 0, si c'est le cas call $draw
-                (call $print_grid)
+                (if
+                    (i32.eq ;; si il n'y a pas besoin de faire l'affichage particulier
+                        (local.get $n_to_print)
+                        (i32.const 0)
+                    )
+                    (then 
+                        (call $print_grid (i32.const 1))
+                        (call $sleep (f32.const 1.0))
+                    ) ;; print en clearant le screen
+                    (else ;; sinon on fait l'affiche que des n derniers état du jeu
+                        (call $draw
+                            (local.get $number_steps)
+                            (local.get $current_number_steps)
+                            (local.get $n_to_print)
+                        )
+                    )
+                )
+
                 (call $step)
-                (call $sleep (f32.const 1.0))
 
                 ;; test si fin, sinon +1 a current number step
                 (br_if $break_main_loop (i32.eq (local.get $current_number_steps) (local.get $number_steps)))
@@ -339,11 +356,6 @@
 
                 (br $main_loop)
             )
-        )
-        
-        ;; affichage des n lignes demandé par l'user
-        (
-
         )
     )
 

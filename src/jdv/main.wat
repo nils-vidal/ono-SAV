@@ -10,8 +10,8 @@
     (func $read_step (import "ono" "read_step") (result i32))
     (func $read_number_line_to_print (import "ono" "read_number_line_to_print") (result i32))
     
-    (global $w i32 (i32.const 40))
-    (global $h i32 (i32.const 30))
+    (global $w (mut i32) (i32.const 40))
+    (global $h (mut i32) (i32.const 30))
     (memory 1)
 
     
@@ -323,6 +323,8 @@
         (local.set $number_steps (call $read_step))
         (local.set $current_number_steps (i32.const 1)) ;; =1 car si option --steps non précisé la boucle reste infine car 1 > 0 donc 1+x > 0, avec x le nombre de tour de boucle
 
+        (global.set $h (i32.wrap_i64 (call $read_int)))
+        (global.set $w (i32.wrap_i64 (call $read_int)))
 
         (call $fill_random)
         (block $break_main_loop

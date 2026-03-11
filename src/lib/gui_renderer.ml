@@ -1,7 +1,6 @@
 open Tsdl
 
 let cell_size = 16
-
 let window = ref None
 let renderer = ref None
 let grid_w = ref 40
@@ -18,8 +17,7 @@ let init_gui () =
   let w = !grid_w * cell_size in
   let h = !grid_h * cell_size in
   let win =
-    sdl_check
-      (Sdl.create_window ~w ~h "Game of Life" Sdl.Window.shown)
+    sdl_check (Sdl.create_window ~w ~h "Game of Life" Sdl.Window.shown)
   in
   let ren =
     sdl_check
@@ -28,10 +26,7 @@ let init_gui () =
   window := Some win;
   renderer := Some ren
 
-let ensure_init () =
-  match !renderer with
-  | Some _ -> ()
-  | None -> init_gui ()
+let ensure_init () = match !renderer with Some _ -> () | None -> init_gui ()
 
 let get_renderer () =
   ensure_init ();
@@ -48,14 +43,12 @@ let clear_screen () =
 
 let print_cell alive =
   let r = get_renderer () in
-  if alive then
-    sdl_check (Sdl.set_render_draw_color r 255 183 197 255) (* pink for alive *)
-  else
-    sdl_check (Sdl.set_render_draw_color r 30 30 30 255); (* dark for dead *)
+  if alive then sdl_check (Sdl.set_render_draw_color r 255 183 197 255)
+    (* pink for alive *)
+  else sdl_check (Sdl.set_render_draw_color r 30 30 30 255);
+  (* dark for dead *)
   let rect =
-    Sdl.Rect.create
-      ~x:(!cursor_col * cell_size)
-      ~y:(!cursor_row * cell_size)
+    Sdl.Rect.create ~x:(!cursor_col * cell_size) ~y:(!cursor_row * cell_size)
       ~w:cell_size ~h:cell_size
   in
   sdl_check (Sdl.render_fill_rect r (Some rect));

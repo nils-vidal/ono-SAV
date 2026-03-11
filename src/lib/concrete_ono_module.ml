@@ -38,10 +38,10 @@ let sleep (seconds : Kdo.Concrete.F32.t) : (unit, _) Result.t =
     Gui_renderer.present ();
     Unix.sleepf seconds_float;
     Ok ())
-  else (
+  else
     let seconds_float = Kdo.Concrete.F32.to_float seconds in
     Unix.sleepf seconds_float;
-    Ok ())
+    Ok ()
 
 let print_cell (cell_id : Kdo.Concrete.I32.t) : (unit, _) Result.t =
   let alive = Kdo.Concrete.I32.to_int cell_id <> 0 in
@@ -75,12 +75,12 @@ let read_int () : (Kdo.Concrete.I64.t, _) Result.t =
   if !use_gui then (
     let n = !read_int_call_count in
     read_int_call_count := n + 1;
-    (match n with
-     | 0 -> Gui_renderer.grid_h := input
-     | 1 ->
-       Gui_renderer.grid_w := input;
-       Gui_renderer.init_gui ()
-     | _ -> ()));
+    match n with
+    | 0 -> Gui_renderer.grid_h := input
+    | 1 ->
+        Gui_renderer.grid_w := input;
+        Gui_renderer.init_gui ()
+    | _ -> ());
   Ok (Kdo.Concrete.I64.of_int64 i64)
 
 let m =

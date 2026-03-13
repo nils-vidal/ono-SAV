@@ -92,6 +92,4 @@ let pp = Fmt.int64
 
 let of_int64 (v : int64) : t = v
 
-let of_int (v : Int.t) : t = Int64.of_int v
-
 let to_int64 (v : t) : int64 = v

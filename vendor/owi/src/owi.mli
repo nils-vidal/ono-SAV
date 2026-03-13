@@ -142,8 +142,6 @@ end
 module Concrete_i64 : sig
   type t
 
-  val of_int : Int.t -> t
-
   val of_int64 : Int64.t -> t
 
   val to_int64 : t -> Int64.t

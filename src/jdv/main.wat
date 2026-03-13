@@ -9,10 +9,6 @@
     (func $read_int (import "ono" "read_int") (result i64))
     (func $read_step (import "ono" "read_step") (result i32))
     (func $read_number_line_to_print (import "ono" "read_number_line_to_print") (result i32))
-    (func $init_needed (import "ono" "init_needed") (result i32))
-    (func $init (import "ono" "init"))
-    (func $load_next_point (import "ono" "load_next_point") (result i32 i32))
-    (func $get_dim (import "ono" "get_dim") (result i32 i32))
     
     (global $w (mut i32) (i32.const 40))
     (global $h (mut i32) (i32.const 30))
@@ -319,54 +315,6 @@
         )
     )
 
-    (func $init_board ;; initialisation du board
-        (local $current_pos i32)
-        (local $current_value i32)
-        (local $current_index i32)
-
-        (local.set $current_index (i32.const 0))
-
-
-        (if 
-            (call $init_needed)
-            (then
-                call $init
-
-                call $get_dim ;; récupération des valeurs de largeur et d'hauteur pour update les variables globales
-                global.set $w
-                global.set $h
-
-                (block $break_init_loop 
-                    (loop $init_loop
-                        call $load_next_point ;; met 2 valeurs sur la pile, la position et la valeur actuelle
-                        local.set $current_value
-                        local.set $current_pos
-
-                        (br_if $break_init_loop
-                            (i32.eq ;; si la position est -1, cela signifie qu'il n'y a plus de valeur a rentrer dans le board
-                                (local.get $current_pos)
-                                (i32.const -1)   
-                            )
-                        )
-
-                        ;; ajout dans la mémoire la valeur à l'indice * 4 pour correspondre a la taille des entiers 
-                        (i32.store
-                            (i32.mul (local.get $current_pos) (i32.const 4))
-                            (local.get $current_value)    
-                        )
-
-
-                        (br $init_loop)
-                    )
-                )
-                ;; initialisation du board personnalisé    
-            )
-            (else
-                (call $fill_random)
-            )
-        )
-    )
-
     (func $main
         (local $number_steps i32)
         (local $current_number_steps i32)
@@ -375,10 +323,10 @@
         (local.set $number_steps (call $read_step))
         (local.set $current_number_steps (i32.const 1)) ;; =1 car si option --steps non précisé la boucle reste infine car 1 > 0 donc 1+x > 0, avec x le nombre de tour de boucle
 
-        (call $init_board) ;; initialisation du board
+        (global.set $h (i32.wrap_i64 (call $read_int)))
+        (global.set $w (i32.wrap_i64 (call $read_int)))
 
-
-        ;; boucle principale du jeu
+        (call $fill_random)
         (block $break_main_loop
             (loop $main_loop
                 ;; for tests

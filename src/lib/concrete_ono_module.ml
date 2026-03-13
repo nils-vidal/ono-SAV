@@ -2,11 +2,6 @@ type extern_func = Kdo.Concrete.Extern_func.extern_func
 
 let step_number = ref 0
 let number_line_printed : int ref = ref 0
-let path_to_file : string ref = ref ""
-let data_from_file : int list ref = ref []
-let index_of_data = ref 0
-let x_of_data = ref 0
-let y_of_data = ref 0
 let use_gui = ref false
 let read_int_call_count = ref 0
 
@@ -76,6 +71,7 @@ let clear_screen () : (unit, _) Result.t =
 
 let read_int () : (Kdo.Concrete.I64.t, _) Result.t =
   let input = read_int () in
+  let i64 = Int64.of_int input in
   if !use_gui then (
     let n = !read_int_call_count in
     read_int_call_count := n + 1;
@@ -85,52 +81,7 @@ let read_int () : (Kdo.Concrete.I64.t, _) Result.t =
         Gui_renderer.grid_w := input;
         Gui_renderer.init_gui ()
     | _ -> ());
-  Ok (Kdo.Concrete.I64.of_int input)
-
-let init_needed () : (Kdo.Concrete.I32.t, _) Result.t =
-  if !path_to_file = "" then Ok (Kdo.Concrete.I32.of_int 0)
-    (* 0 si il n'y a rien a faire *)
-  else Ok (Kdo.Concrete.I32.of_int 1)
-(* 1 si on doit initialiser *)
-
-let init () : (unit, _) Result.t =
-  if !path_to_file = "" then
-    raise (InternalError "impossible d'initialiser, aucun chemin n'est précisé")
-  else (*traitement de l'initialisation*)
-    let file = open_in !path_to_file in
-    try
-      let first_line = input_line file in
-      let x_y = String.split_on_char ',' first_line in
-      let max_x = int_of_string (List.hd x_y) in
-      x_of_data := max_x;
-      y_of_data := int_of_string (List.nth x_y 1);
-
-      for _x = 0 to max_x - 1 do
-        let line = input_line file in
-        for y = 0 to String.length line - 1 do
-          data_from_file := !data_from_file @ [ int_of_char line.[y] - 48 ]
-          (* on retire -48 à la valeur pour avoir le vrai numéro, pas son code ascii *)
-        done
-      done;
-
-      close_in file;
-      Ok ()
-    with e -> raise (InternalError (Printexc.to_string e))
-
-(*let load_file () : (Kdo.)*)
-let load_next_point () : (Kdo.Concrete.I32.t * Kdo.Concrete.I32.t, _) Result.t =
-  let open Kdo.Concrete.I32 in
-  if !index_of_data >= List.length !data_from_file then
-    Ok (of_int (-1), of_int 0)
-  else
-    let value = List.nth !data_from_file !index_of_data in
-    let return = Ok (of_int !index_of_data, of_int value) in
-    index_of_data := !index_of_data + 1;
-    return
-
-let get_dim () : (Kdo.Concrete.I32.t * Kdo.Concrete.I32.t, _) Result.t =
-  let open Kdo.Concrete.I32 in
-  Ok (of_int !x_of_data, of_int !y_of_data)
+  Ok (Kdo.Concrete.I64.of_int64 i64)
 
 let m =
   let open Kdo.Concrete.Extern_func in
@@ -149,10 +100,6 @@ let m =
       ("read_step", Extern_func (unit ^->. i32, read_step));
       ( "read_number_line_to_print",
         Extern_func (unit ^->. i32, read_number_line_to_print) );
-      ("init_needed", Extern_func (unit ^->. i32, init_needed));
-      ("init", Extern_func (unit ^->. unit, init));
-      ("load_next_point", Extern_func (unit ^->.. (i32, i32), load_next_point));
-      ("get_dim", Extern_func (unit ^->.. (i32, i32), get_dim));
     ]
   in
   {

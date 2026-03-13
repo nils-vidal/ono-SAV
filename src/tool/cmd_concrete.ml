@@ -15,7 +15,7 @@ let max_printed =
   let info = Arg.info [ "n_printed" ] in
   Arg.value (Arg.opt Arg.int 0 info)
 
-let start_with = 
+let start_with =
   let info = Arg.info [ "start_with" ] in
   Arg.value (Arg.opt Arg.string "" info)
 

@@ -1,7 +1,7 @@
 open Syntax
 module Interpret = Kdo.Interpret.Concrete (Kdo.Interpret.Default_parameters)
 
-let run ~source_file ~seed ~steps ~m_print =
+let run ~source_file ~seed ~steps ~m_print ~s_with =
   (* generate seed *)
   if seed <> 0 then Random.init seed else Random.self_init ();
   (* getting number of steps wanted *)
@@ -14,6 +14,9 @@ let run ~source_file ~seed ~steps ~m_print =
           options --steps et --n_printed doivent avoir une valeur strictement \
           positive !")
   else Concrete_ono_module.number_line_printed := m_print;
+
+  (* adding path to file *)
+  Concrete_ono_module.path_to_file := s_with;
 
   (* Parsing. *)
   Logs.info (fun m -> m "Parsing file %a..." Fpath.pp source_file);

@@ -15,6 +15,10 @@ let max_printed =
   let info = Arg.info [ "n_printed" ] in
   Arg.value (Arg.opt Arg.int 0 info)
 
+let start_with =
+  let info = Arg.info [ "start_with" ] in
+  Arg.value (Arg.opt Arg.string "" info)
+
 let info = Cmd.info "concrete" ~exits
 
 let term =
@@ -23,8 +27,9 @@ let term =
   and+ source_file = source_file
   and+ seed = seed_term
   and+ steps = steps
-  and+ m_print = max_printed in
-  Ono.Concrete_driver.run ~source_file ~seed ~steps ~m_print |> function
+  and+ m_print = max_printed
+  and+ s_with = start_with in
+  Ono.Concrete_driver.run ~source_file ~seed ~steps ~m_print ~s_with |> function
   | Ok () -> Ok ()
   | Error e -> Error (`Msg (Kdo.R.err_to_string e))
 

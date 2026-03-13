@@ -7,6 +7,8 @@ let data_from_file : int list ref = ref []
 let index_of_data = ref 0
 let x_of_data = ref 0
 let y_of_data = ref 0
+let use_gui = ref false
+let read_int_call_count = ref 0
 
 exception InternalError of string
 
@@ -35,26 +37,54 @@ let random_i32_bounded (upperBound : Kdo.Concrete.I32.t) :
   Ok (Kdo.Concrete.I32.of_int32 random_int)
 
 let sleep (seconds : Kdo.Concrete.F32.t) : (unit, _) Result.t =
-  let seconds_float = Kdo.Concrete.F32.to_float seconds in
-  Unix.sleepf seconds_float;
-  Ok ()
+  if !use_gui then (
+    let seconds_float = Kdo.Concrete.F32.to_float seconds in
+    Gui_renderer.pump_events ();
+    Gui_renderer.present ();
+    Unix.sleepf seconds_float;
+    Ok ())
+  else
+    let seconds_float = Kdo.Concrete.F32.to_float seconds in
+    Unix.sleepf seconds_float;
+    Ok ()
 
 let print_cell (cell_id : Kdo.Concrete.I32.t) : (unit, _) Result.t =
   let alive = Kdo.Concrete.I32.to_int cell_id <> 0 in
-  Printf.printf "%s%!" (if alive then "🌸" else "☠️");
-  Unix.sleepf 0.00005;
-  Ok ()
+  if !use_gui then (
+    Gui_renderer.print_cell alive;
+    Ok ())
+  else (
+    Printf.printf "%s%!" (if alive then "🌸" else "☠️");
+    Unix.sleepf 0.00005;
+    Ok ())
 
 let newline () : (unit, _) Result.t =
-  Printf.printf "\n%!";
-  Ok ()
+  if !use_gui then (
+    Gui_renderer.newline ();
+    Ok ())
+  else (
+    Printf.printf "\n%!";
+    Ok ())
 
 let clear_screen () : (unit, _) Result.t =
-  Printf.printf "\027[H\027[J%!";
-  Ok ()
+  if !use_gui then (
+    Gui_renderer.clear_screen ();
+    Ok ())
+  else (
+    Printf.printf "\027[H\027[J%!";
+    Ok ())
 
 let read_int () : (Kdo.Concrete.I64.t, _) Result.t =
   let input = read_int () in
+  if !use_gui then (
+    let n = !read_int_call_count in
+    read_int_call_count := n + 1;
+    match n with
+    | 0 -> Gui_renderer.grid_h := input
+    | 1 ->
+        Gui_renderer.grid_w := input;
+        Gui_renderer.init_gui ()
+    | _ -> ());
   Ok (Kdo.Concrete.I64.of_int input)
 
 let init_needed () : (Kdo.Concrete.I32.t, _) Result.t =

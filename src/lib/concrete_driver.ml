@@ -1,9 +1,10 @@
 open Syntax
 module Interpret = Kdo.Interpret.Concrete (Kdo.Interpret.Default_parameters)
 
-let run ~source_file ~seed ~steps ~m_print =
+let run ~source_file ~seed ~steps ~m_print ~use_gui =
   (* generate seed *)
   if seed <> 0 then Random.init seed else Random.self_init ();
+  Concrete_ono_module.use_gui := use_gui;
   (* getting number of steps wanted *)
   Concrete_ono_module.step_number := steps;
   (* getting number of last printing line wanted *)
@@ -46,4 +47,6 @@ let run ~source_file ~seed ~steps ~m_print =
 
   (* Interpreting. *)
   Logs.info (fun m -> m "Interpreting...");
-  Interpret.modul link_state linked_module
+  let result = Interpret.modul link_state linked_module in
+  if use_gui then Gui_renderer.cleanup ();
+  result

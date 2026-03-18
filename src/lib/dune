@@ -4,10 +4,10 @@
   concrete_driver
   concrete_ono_module
   error
-  gui_renderer
   symbolic_driver
   symbolic_ono_module
   syntax
+  gui_renderer
   ui_renderer
   ui_renderer_gui
   ui_renderer_terminal)

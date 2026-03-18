@@ -15,11 +15,13 @@ let max_printed =
   let info = Arg.info [ "n_printed" ] in
   Arg.value (Arg.opt Arg.int 0 info)
 
+let start_with =
+  let info = Arg.info [ "start_with" ] in
+  Arg.value (Arg.opt Arg.string "" info)
+
 let use_gui =
-  let info =
-    Arg.info [ "use-gui" ] ~doc:"use sdl graphical window instead of terminal"
-  in
-  Arg.value (Arg.flag info)
+  let info = Arg.info [ "use_gui" ] in
+  Arg.value (Arg.opt Arg.bool false info)
 
 let info = Cmd.info "concrete" ~exits
 
@@ -30,8 +32,9 @@ let term =
   and+ seed = seed_term
   and+ steps = steps
   and+ m_print = max_printed
+  and+ s_with = start_with
   and+ use_gui = use_gui in
-  Ono.Concrete_driver.run ~source_file ~seed ~steps ~m_print ~use_gui
+  Ono.Concrete_driver.run ~source_file ~seed ~steps ~m_print ~s_with ~use_gui
   |> function
   | Ok () -> Ok ()
   | Error e -> Error (`Msg (Kdo.R.err_to_string e))

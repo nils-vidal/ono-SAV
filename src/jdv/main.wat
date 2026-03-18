@@ -160,145 +160,154 @@
             )
     )
 
-    (func $step
-        (local $array_size i32)
-        (local $row i32)
-        (local $column i32)
-        (local $res i32)
-        (local $top_stack i32)
-        (local $cell_alive i32)
+    (func $cell_index (param $col i32) (param $row i32) (result i32)
+        (i32.add
+            (i32.mul (local.get $row) (global.get $w))
+            (local.get $col)
+        )
+    )
+
+    (func $store_neighbour_count (param $index i32) (param $array_size i32) (param $count i32)
+        (i32.store
+            (i32.mul
+                (i32.add
+                    (local.get $index)
+                    (local.get $array_size)
+                )
+                (i32.const 4)
+            )
+            (local.get $count)
+        )
+    )
+
+    (func $load_neighbour_count (param $index i32) (param $array_size i32) (result i32)
+        (i32.load
+            (i32.mul
+                (i32.add
+                    (local.get $index)
+                    (local.get $array_size)
+                )
+                (i32.const 4)
+            )
+        )
+    )
+
+    (func $next_cell_state (param $cell_alive i32) (param $alive_neighbours_count i32) (result i32)
         (local $live i32)
-        (local $alive_neigbhors_count i32)
-        (local $current_coord_index i32)
 
-        (local.set $array_size (i32.mul (global.get $w) (global.get $h)))
-
-
-        (local.set $column (i32.const 0))
-        (local.set $row (i32.const 0))
-
-        (block $break_row_1
-            (loop $loop_row_1
-                (br_if $break_row_1 (i32.eq (local.get $row) (global.get $h)))
-
-                (block $break_col_1
-                    (loop $loop_col_1
-                        (br_if $break_col_1 (i32.eq (local.get $column) (global.get $w)))
-
-                        (local.set $res (call $count_alive_neighbours (local.get $column) (local.get $row)))
-
-                        ;; (if (i32.and (i32.le_s (local.get $row) (i32.const 2)) (i32.le_s (local.get $column) (i32.const 2)))
-                        ;;     (then
-                        ;;         (call $print_i32 (local.get $column))
-                        ;;         (call $print_i32 (i32.const -1))
-                        ;;         (call $print_i32 (local.get $row))
-                        ;;         (call $print_i32 (i32.const -1))
-                        ;;         (call $print_i32 (local.get $res))
-                        ;;         (call $print_i32 (i32.const -1111111))
-                        ;;         (call $newline)
-                        ;;     )
-                        ;; )
-
-                        (i32.store
-                            (i32.add
-                                (i32.mul
-                                    (i32.add
-                                        (local.get $column)
-                                        (i32.mul (local.get $row) (global.get $w))
-                                    )
-                                    (i32.const 4)
-                                )
-                                (local.get $array_size)
-                            )
-                            (local.get $res)
-                        )
-
-                        (local.set $column 
-                            (i32.add (local.get $column) (i32.const 1))
-                        )
-                        (br $loop_col_1)
+        (if (i32.eq (local.get $cell_alive) (i32.const 1))
+            (then
+                (local.set $live
+                    (i32.or
+                        (i32.eq (local.get $alive_neighbours_count) (i32.const 2))
+                        (i32.eq (local.get $alive_neighbours_count) (i32.const 3))
                     )
                 )
-
-                (local.set $column (i32.const 0))
-                (local.set $row 
-                    (i32.add (local.get $row) (i32.const 1))
+            )
+            (else
+                (local.set $live
+                    (i32.eq (local.get $alive_neighbours_count) (i32.const 3))
                 )
-                (br $loop_row_1)
             )
         )
 
-        (local.set $row (i32.const 0))
+        (i32.or
+            (local.get $live)
+            (i32.eq (call $random_i32_bounded (i32.const 10000)) (i32.const 0))
+        )
+    )
+
+    (func $compute_all_neighbour_counts (param $array_size i32)
+        (local $row i32)
+        (local $column i32)
+        (local $index i32)
+        (local $count i32)
+
         (local.set $column (i32.const 0))
+        (local.set $row (i32.const 0))
 
-        (block $break_row_2
-            (loop $loop_row_2
-                (br_if $break_row_2 (i32.eq (local.get $row) (global.get $h)))
+        (block $break_row
+            (loop $loop_row
+                (br_if $break_row (i32.eq (local.get $row) (global.get $h)))
 
-                (block $break_col_2
-                    (loop $loop_col_2
-                        (br_if $break_col_2 (i32.eq (local.get $column) (global.get $w)))
+                (block $break_col
+                    (loop $loop_col
+                        (br_if $break_col (i32.eq (local.get $column) (global.get $w)))
 
-                        (local.set $current_coord_index
-                            (i32.add
-                                (i32.mul (local.get $row) (global.get $w))
-                                (local.get $column)
-                            )
-                        )
-
-                        (local.set $cell_alive
-                            (i32.load 
-                                (i32.mul (local.get $current_coord_index) (i32.const 4))
-                            )
-                        )
-
-                        (local.set $alive_neigbhors_count
-                            (i32.load
-                                (i32.add
-                                    (i32.mul (local.get $current_coord_index) (i32.const 4))
-                                    (local.get $array_size)
-                                )
-                            )
-                        )
-
-                        (if (i32.eq (local.get $cell_alive) (i32.const 1))
-                            (then
-                                (local.set $live
-                                    (i32.or
-                                        (i32.eq (local.get $alive_neigbhors_count) (i32.const 2))
-                                        (i32.eq (local.get $alive_neigbhors_count) (i32.const 3))
-                                    )
-                                )
-                            )
-                            (else
-                                (local.set $live
-                                    (i32.eq (local.get $alive_neigbhors_count) (i32.const 3))
-                                )
-                            )
-                        )
-
-                        (local.set $live
-                            (i32.or
-                                (local.get $live)
-                                (i32.eq (call $random_i32_bounded (i32.const 10000)) (i32.const 0))
-                            )
-                        )
-
-                        (i32.store
-                            (i32.mul (local.get $current_coord_index) (i32.const 4))
-                            (local.get $live)
-                        )
+                        (local.set $index (call $cell_index (local.get $column) (local.get $row)))
+                        (local.set $count (call $count_alive_neighbours (local.get $column) (local.get $row)))
+                        (call $store_neighbour_count (local.get $index) (local.get $array_size) (local.get $count))
 
                         (local.set $column (i32.add (local.get $column) (i32.const 1)))
-                        (br $loop_col_2)
+                        (br $loop_col)
                     )
                 )
 
                 (local.set $column (i32.const 0))
                 (local.set $row (i32.add (local.get $row) (i32.const 1)))
-                (br $loop_row_2)
+                (br $loop_row)
             )
         )
+    )
+
+    (func $apply_all_next_states (param $array_size i32)
+        (local $row i32)
+        (local $column i32)
+        (local $index i32)
+        (local $cell_alive i32)
+        (local $alive_neighbours_count i32)
+        (local $live i32)
+
+        (local.set $column (i32.const 0))
+        (local.set $row (i32.const 0))
+
+        (block $break_row
+            (loop $loop_row
+                (br_if $break_row (i32.eq (local.get $row) (global.get $h)))
+
+                (block $break_col
+                    (loop $loop_col
+                        (br_if $break_col (i32.eq (local.get $column) (global.get $w)))
+
+                        (local.set $index (call $cell_index (local.get $column) (local.get $row)))
+                        (local.set $cell_alive
+                            (i32.load
+                                (i32.mul (local.get $index) (i32.const 4))
+                            )
+                        )
+                        (local.set $alive_neighbours_count
+                            (call $load_neighbour_count (local.get $index) (local.get $array_size))
+                        )
+                        (local.set $live
+                            (call $next_cell_state
+                                (local.get $cell_alive)
+                                (local.get $alive_neighbours_count)
+                            )
+                        )
+
+                        (i32.store
+                            (i32.mul (local.get $index) (i32.const 4))
+                            (local.get $live)
+                        )
+
+                        (local.set $column (i32.add (local.get $column) (i32.const 1)))
+                        (br $loop_col)
+                    )
+                )
+
+                (local.set $column (i32.const 0))
+                (local.set $row (i32.add (local.get $row) (i32.const 1)))
+                (br $loop_row)
+            )
+        )
+    )
+
+    (func $step
+        (local $array_size i32)
+        (local.set $array_size (i32.mul (global.get $w) (global.get $h)))
+
+        (call $compute_all_neighbour_counts (local.get $array_size))
+        (call $apply_all_next_states (local.get $array_size))
     )
 
     (func $draw (param $steps_max i32) (param $current_steps i32) (param $n_to_print i32)

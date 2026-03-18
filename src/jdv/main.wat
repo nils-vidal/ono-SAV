@@ -6,7 +6,7 @@
     (func $print_i32 (import "ono" "print_i32") (param i32))
     (func $print_i64 (import "ono" "print_i64") (param i64))
     (func $random_i32_bounded (import "ono" "random_i32_bounded") (param i32) (result i32))
-    (func $read_int (import "ono" "read_int") (result i64))
+    (func $read_int (import "ono" "read_int") (result i32))
     (func $read_step (import "ono" "read_step") (result i32))
     (func $read_number_line_to_print (import "ono" "read_number_line_to_print") (result i32))
     (func $init_needed (import "ono" "init_needed") (result i32))
@@ -280,7 +280,7 @@
                         (local.set $live
                             (i32.or
                                 (local.get $live)
-                                (i32.eq (call $random_i32_bounded (i32.const 100)) (i32.const 0))
+                                (i32.eq (call $random_i32_bounded (i32.const 10000)) (i32.const 0))
                             )
                         )
 
@@ -362,7 +362,9 @@
                 ;; initialisation du board personnalisé    
             )
             (else
-                (call $fill_random)
+               (global.set $h (call $read_int))
+               (global.set $w (call $read_int))
+               (call $fill_random)
             )
         )
     )

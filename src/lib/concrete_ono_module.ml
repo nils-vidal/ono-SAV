@@ -36,26 +36,26 @@ let random_i32_bounded (upperBound : Kdo.Concrete.I32.t) :
 
 let sleep (seconds : Kdo.Concrete.F32.t) : (unit, _) Result.t =
   let seconds_float = Kdo.Concrete.F32.to_float seconds in
-  Unix.sleepf seconds_float;
+  Ui_renderer.sleep seconds_float;
   Ok ()
 
 let print_cell (cell_id : Kdo.Concrete.I32.t) : (unit, _) Result.t =
   let alive = Kdo.Concrete.I32.to_int cell_id <> 0 in
-  Printf.printf "%s%!" (if alive then "🌸" else "☠️");
-  Unix.sleepf 0.00005;
+  Ui_renderer.print_cell alive;
   Ok ()
 
 let newline () : (unit, _) Result.t =
-  Printf.printf "\n%!";
+  Ui_renderer.newline ();
   Ok ()
 
 let clear_screen () : (unit, _) Result.t =
-  Printf.printf "\027[H\027[J%!";
+  Ui_renderer.clear_screen ();
   Ok ()
 
-let read_int () : (Kdo.Concrete.I64.t, _) Result.t =
+let read_int () : (Kdo.Concrete.I32.t, _) Result.t =
   let input = read_int () in
-  Ok (Kdo.Concrete.I64.of_int input)
+  Ui_renderer.on_read_int input;
+  Ok (Kdo.Concrete.I32.of_int input)
 
 let init_needed () : (Kdo.Concrete.I32.t, _) Result.t =
   if !path_to_file = "" then Ok (Kdo.Concrete.I32.of_int 0)
@@ -115,7 +115,7 @@ let m =
       ("newline", Extern_func (unit ^->. unit, newline));
       ("clear_screen", Extern_func (unit ^->. unit, clear_screen));
       ("random_i32_bounded", Extern_func (i32 ^->. i32, random_i32_bounded));
-      ("read_int", Extern_func (unit ^->. i64, read_int));
+      ("read_int", Extern_func (unit ^->. i32, read_int));
       ("read_step", Extern_func (unit ^->. i32, read_step));
       ( "read_number_line_to_print",
         Extern_func (unit ^->. i32, read_number_line_to_print) );

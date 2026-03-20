@@ -3,20 +3,39 @@
 open Cmdliner
 open Ono_cli
 
-let x = 
-  let info2 = Arg.info ["seed"] in 
-  Arg.value (Arg.opt Arg.int 0 info2)
-  
-let info = Cmd.info "concrete" ~exits
+let seed_term =
+  let info = Arg.info [ "seed" ] in
+  Arg.value (Arg.opt Arg.int 0 info)
 
+let steps =
+  let info = Arg.info [ "steps" ] in
+  Arg.value (Arg.opt Arg.int 0 info)
+
+let max_printed =
+  let info = Arg.info [ "n_printed" ] in
+  Arg.value (Arg.opt Arg.int 0 info)
+
+let start_with =
+  let info = Arg.info [ "start_with" ] in
+  Arg.value (Arg.opt Arg.string "" info)
+
+let use_gui =
+  let info = Arg.info [ "use_gui" ] in
+  Arg.value (Arg.opt Arg.bool false info)
+
+let info = Cmd.info "concrete" ~exits
 
 let term =
   let open Term.Syntax in
-  let+ () = setup_log 
-    and+ source_file = source_file 
-    and+ seed = x 
-  in
-  Ono.Concrete_driver.run ~source_file ~seed |> function
+  let+ () = setup_log
+  and+ source_file = source_file
+  and+ seed = seed_term
+  and+ steps = steps
+  and+ m_print = max_printed
+  and+ s_with = start_with
+  and+ use_gui = use_gui in
+  Ono.Concrete_driver.run ~source_file ~seed ~steps ~m_print ~s_with ~use_gui
+  |> function
   | Ok () -> Ok ()
   | Error e -> Error (`Msg (Kdo.R.err_to_string e))
 

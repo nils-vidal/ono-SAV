@@ -6,7 +6,11 @@
   error
   symbolic_driver
   symbolic_ono_module
-  syntax)
- (libraries fpath kdo logs)
+  syntax
+  gui_renderer
+  ui_renderer
+  ui_renderer_gui
+  ui_renderer_terminal)
+ (libraries fpath kdo logs tsdl)
  (instrumentation
   (backend bisect_ppx)))

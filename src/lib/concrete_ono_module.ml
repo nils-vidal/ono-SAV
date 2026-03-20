@@ -63,12 +63,12 @@ let init_needed () : (Kdo.Concrete.I32.t, _) Result.t =
   else Ok (Kdo.Concrete.I32.of_int 1)
 (* 1 si on doit initialiser *)
 
-let ask_for_width () : (unit, _) Result.t = 
-  print_string "Entrez la largeur du plateau : "; 
-  Ok () 
+let ask_for_width () : (unit, _) Result.t =
+  print_string "Entrez la largeur du plateau : ";
+  Ok ()
 
-let ask_for_height () : (unit, _) Result.t = 
-  print_string "Entrez la hauteur du plateau : "; 
+let ask_for_height () : (unit, _) Result.t =
+  print_string "Entrez la hauteur du plateau : ";
   Ok ()
 
 let init () : (unit, _) Result.t =

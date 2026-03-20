@@ -13,6 +13,8 @@
     (func $init (import "ono" "init"))
     (func $load_next_point (import "ono" "load_next_point") (result i32 i32))
     (func $get_dim (import "ono" "get_dim") (result i32 i32))
+    (func $ask_for_width (import "ono" "ask_for_width"))
+    (func $ask_for_height (import "ono" "ask_for_height"))
     
     (global $w (mut i32) (i32.const 40))
     (global $h (mut i32) (i32.const 30))
@@ -371,7 +373,9 @@
                 ;; initialisation du board personnalisé    
             )
             (else
+               call $ask_for_height
                (global.set $h (call $read_int))
+               call $ask_for_width
                (global.set $w (call $read_int))
                (call $fill_random)
             )

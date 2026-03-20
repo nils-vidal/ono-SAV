@@ -63,6 +63,14 @@ let init_needed () : (Kdo.Concrete.I32.t, _) Result.t =
   else Ok (Kdo.Concrete.I32.of_int 1)
 (* 1 si on doit initialiser *)
 
+let ask_for_width () : (unit, _) Result.t = 
+  print_string "Entrez la largeur du plateau : "; 
+  Ok () 
+
+let ask_for_height () : (unit, _) Result.t = 
+  print_string "Entrez la hauteur du plateau : "; 
+  Ok ()
+
 let init () : (unit, _) Result.t =
   if !path_to_file = "" then
     raise (InternalError "impossible d'initialiser, aucun chemin n'est précisé")
@@ -123,6 +131,8 @@ let m =
       ("init", Extern_func (unit ^->. unit, init));
       ("load_next_point", Extern_func (unit ^->.. (i32, i32), load_next_point));
       ("get_dim", Extern_func (unit ^->.. (i32, i32), get_dim));
+      ("ask_for_width", Extern_func (unit ^->. unit, ask_for_width));
+      ("ask_for_height", Extern_func (unit ^->. unit, ask_for_height));
     ]
   in
   {

@@ -57,7 +57,7 @@
   (xmlm
    (>= 1.4.0))
   z3
-  tsdl
+  (tsdl (>= 1.2.0))
   ;; doc
   (odoc
    (and

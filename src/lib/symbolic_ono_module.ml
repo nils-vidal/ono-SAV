@@ -4,12 +4,10 @@ let print_i32 (n : Kdo.Symbolic.I32.t) : unit Kdo.Symbolic.Choice.t =
   Logs.app (fun m -> m "%a" Kdo.Symbolic.I32.pp n);
   Kdo.Symbolic.Choice.return ()
 
-  
 let mutation_factor () : Kdo.Symbolic.I32.t Kdo.Symbolic.Choice.t =
   let upperBound = 10000 in
   let random_int = Random.int upperBound in
   Kdo.Symbolic.Choice.return (Kdo.Symbolic.I32.of_int random_int)
-
 
 let i32_symbol () : Kdo.Symbolic.I32.t Kdo.Symbolic.Choice.t =
   Kdo.Symbolic.Choice.with_new_symbol (Smtml.Ty.Ty_bitv 32)

@@ -958,6 +958,8 @@ end
 module Symbolic_i32 : sig
   type t
 
+  val of_int : int -> t
+
   val add : t -> t -> t
 
   val lt : t -> t -> Symbolic_boolean.t

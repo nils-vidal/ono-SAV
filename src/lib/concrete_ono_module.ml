@@ -17,6 +17,7 @@ let read_number_line_to_print () : (Kdo.Concrete.I32.t, _) Result.t =
   Ok (Kdo.Concrete.I32.of_int !number_line_printed)
 
 let print_i32 (n : Kdo.Concrete.I32.t) : (unit, _) Result.t =
+  print_endline "testsssssss\n";
   Logs.app (fun m -> m "%a" Kdo.Concrete.I32.pp n);
   Ok ()
 
@@ -53,6 +54,8 @@ let clear_screen () : (unit, _) Result.t =
   Ok ()
 
 let read_int () : (Kdo.Concrete.I32.t, _) Result.t =
+  print_endline "test de read_int dans concrete";
+
   let input = read_int () in
   Ui_renderer.on_read_int input;
   Ok (Kdo.Concrete.I32.of_int input)

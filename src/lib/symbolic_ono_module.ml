@@ -1,7 +1,6 @@
 type extern_func = Kdo.Symbolic.Extern_func.extern_func
 
 let print_i32 (n : Kdo.Symbolic.I32.t) : unit Kdo.Symbolic.Choice.t =
-  print_endline "test de affiche\n";
   Logs.app (fun m -> m "%a" Kdo.Symbolic.I32.pp n);
   Kdo.Symbolic.Choice.return ()
 

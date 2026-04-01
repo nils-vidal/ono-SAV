@@ -958,8 +958,6 @@ end
 module Symbolic_i32 : sig
   type t
 
-  val of_int : int -> t
-
   val add : t -> t -> t
 
   val of_int : int -> t

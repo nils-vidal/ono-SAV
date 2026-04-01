@@ -962,6 +962,8 @@ module Symbolic_i32 : sig
 
   val add : t -> t -> t
 
+  val of_int : int -> t
+
   val lt : t -> t -> Symbolic_boolean.t
 
   val pp : t Fmt.t
@@ -974,9 +976,13 @@ module Symbolic_i64 : sig
 
   val add : t -> t -> t
 
+  val of_int : int -> t
+
   val lt : t -> t -> Symbolic_boolean.t
 
   val pp : t Fmt.t
+
+  val symbol : Smtml.Symbol.t -> t
 end
 
 module Symbolic_v128 : sig

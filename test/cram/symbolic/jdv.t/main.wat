@@ -265,6 +265,10 @@
         (call $apply_all_next_states (local.get $array_size))
     )
 
+
+
+
+    ;; -------------------- CONFIG --------------------
     (func $first_cell_alive
         (if (i32.eq (call $is_alive (i32.const 1) (i32.const 1)) (i32.const 0))
             (then (unreachable)) ;; Si morte, ce chemin ne nous intéresse pas !
@@ -272,11 +276,46 @@
     )
 
 
+    (func $first_cell_dead
+        (if (i32.ne (call $is_alive (i32.const 1) (i32.const 1)) (i32.const 0))
+            (then (unreachable)) ;; Si morte, ce chemin ne nous intéresse pas !
+        )
+    )
+
+    (func $at_least_one_alive
+        (local $i i32)
+        (local $num_cells i32)
+        (local.set $num_cells (i32.mul (global.get $w) (global.get $h)))
+        (local.set $i (i32.const 0))
+
+        (block $break_check
+            (loop $check_loop
+                ;; On charge l'état de la cellule i
+                (i32.load (i32.mul (local.get $i) (i32.const 4)))
+                
+                ;; Si la cellule est (morte)
+                (i32.eqz) 
+                (if 
+                    (then (unreachable) )
+                )
+
+                ;; Incrémentation
+                (local.set $i (i32.add (local.get $i) (i32.const 1)))
+                (br_if $break_check (i32.ge_u (local.get $i) (local.get $num_cells)))
+                (br $check_loop)
+            )
+        )
+    )
+    ;; -------------------- CONFIG --------------------
+
+
     (func $main
         (call $fill_symbolic) ;; initialisation du board
         (call $step) ;; application des contraites
         
         (call $first_cell_alive) ;; on cherche la config interessante avec la premiere case en vie
+        ;;(call $first_cell_dead) 
+        ;;(call $at_least_one_alive)
     )
 
     (start $main)

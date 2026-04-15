@@ -1,6 +1,6 @@
 type extern_func = Kdo.Symbolic.Extern_func.extern_func
 
-let numero_contrainte = ref (0)
+let numero_contrainte = ref 0
 
 let print_i32 (n : Kdo.Symbolic.I32.t) : unit Kdo.Symbolic.Choice.t =
   Logs.app (fun m -> m "%a" Kdo.Symbolic.I32.pp n);
@@ -39,10 +39,10 @@ let i64_symbol () : Kdo.Symbolic.I64.t Kdo.Symbolic.Choice.t =
   Kdo.Symbolic.Choice.with_new_symbol (Smtml.Ty.Ty_bitv 64)
     Kdo.Symbolic.I64.symbol
 
-let get_num_contrainte () : Kdo.Symbolic.I32.t Kdo.Symbolic.Choice.t = 
-  if (!numero_contrainte < 0)
-    then failwith "Le numéro de contrainte doit être compris entre 0 et 10"
-    else Kdo.Symbolic.Choice.return (Kdo.Symbolic.I32.of_int !numero_contrainte)
+let get_num_contrainte () : Kdo.Symbolic.I32.t Kdo.Symbolic.Choice.t =
+  if !numero_contrainte < 0 then
+    failwith "Le numéro de contrainte doit être compris entre 0 et 10"
+  else Kdo.Symbolic.Choice.return (Kdo.Symbolic.I32.of_int !numero_contrainte)
 
 let m =
   let open Kdo.Symbolic.Extern_func in

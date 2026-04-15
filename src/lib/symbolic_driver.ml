@@ -2,7 +2,9 @@ open Syntax
 module Interpret = Kdo.Interpret.Symbolic (Kdo.Interpret.Default_parameters)
 
 let run ~source_file ~contrainte =
-  Symbolic_ono_module.numero_contrainte := contrainte; (* sélection de la contrainte souhaitée *)
+  Symbolic_ono_module.numero_contrainte := contrainte;
+
+  (* sélection de la contrainte souhaitée *)
 
   (* Parsing. *)
   Logs.info (fun m -> m "Parsing file %a..." Fpath.pp source_file);

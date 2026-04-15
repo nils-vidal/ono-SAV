@@ -1,8 +1,12 @@
 # Changelog
 
-## unreleased
+## 0.4 - 2026-04-15
 
+### Added
 - interpreteur symbolique
+- ajout de la configuration initiale : case (1,1) en vie
+- ajout de la configuration initiale : case (1,1) morte
+- ajout de la configuration initiale : au moins une cellule en vie
 
 ## 0.3 - 2026-03-20
 

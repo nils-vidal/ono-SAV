@@ -117,3 +117,5 @@ let extend_i32_s x = cvtop ty (Sign_extend 32) x
 let extend_i32_u x = cvtop ty (Zero_extend 32) x
 
 let pp = pp
+
+let symbol s = Smtml.Expr.symbol s

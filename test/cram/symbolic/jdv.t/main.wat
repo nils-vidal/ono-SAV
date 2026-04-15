@@ -1,6 +1,7 @@
 (module
     (func $sym_i32 (import "ono" "i32_symbol") (result i32))
     (func $mutation_factor (import "ono" "mutation_factor") (result i32))
+    (func $get_num_contrainte (import "ono" "get_num_contrainte") (result i32))
 
     (global $w (mut i32) (i32.const 3))
     (global $h (mut i32) (i32.const 3))
@@ -269,20 +270,20 @@
 
 
     ;; -------------------- CONFIG --------------------
-    (func $first_cell_alive
+    (func $first_cell_alive ;; config 0
         (if (i32.eq (call $is_alive (i32.const 1) (i32.const 1)) (i32.const 0))
             (then (unreachable)) ;; Si morte, ce chemin ne nous intéresse pas !
         )
     )
 
 
-    (func $first_cell_dead
+    (func $first_cell_dead ;; config 1
         (if (i32.ne (call $is_alive (i32.const 1) (i32.const 1)) (i32.const 0))
             (then (unreachable)) ;; Si morte, ce chemin ne nous intéresse pas !
         )
     )
 
-    (func $at_least_one_alive
+    (func $at_least_one_alive ;; config 2
         (local $i i32)
         (local $num_cells i32)
         (local.set $num_cells (i32.mul (global.get $w) (global.get $h)))
@@ -309,13 +310,32 @@
     ;; -------------------- CONFIG --------------------
 
 
+    (func $select_config
+        (local $num i32)
+        (local.set $num (call $get_num_contrainte))
+
+        (block $case_2
+            (block $case_1
+                (block $case_0
+                    local.get $num
+
+                    br_table $case_0 $case_1 $case_2 $case_0
+                )
+                (call $first_cell_alive)
+                return
+            )
+            (call $first_cell_dead)
+            return
+        )
+        (call $at_least_one_alive)
+        return
+    )
+
     (func $main
         (call $fill_symbolic) ;; initialisation du board
-        (call $step) ;; application des contraites
+        (call $step) ;; application d'un tour de boucle
         
-        (call $first_cell_alive) ;; on cherche la config interessante avec la premiere case en vie
-        ;;(call $first_cell_dead) 
-        ;;(call $at_least_one_alive)
+        (call $select_config) ;; on cherche la config interessante demandé soit par l'utilisateur en ligne de commande, soit une aléatoire 
     )
 
     (start $main)

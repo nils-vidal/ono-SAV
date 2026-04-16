@@ -1,5 +1,6 @@
 (module
     (func $sym_i32 (import "ono" "i32_symbol") (result i32))
+    (func $sym_cell (import "ono" "sym_cell") (result i32))
     (func $mutation_factor (import "ono" "mutation_factor") (result i32))
     (func $get_num_contrainte (import "ono" "get_num_contrainte") (result i32))
 
@@ -97,23 +98,20 @@
     ;; for tests
     (func $fill_symbolic
         (local $num_cells i32)
-            (local $i i32)
-            (local $flag i32)
-            (local.set $num_cells (i32.mul (global.get $w) (global.get $h)))
-            (local.set $flag (i32.const 0))
-            (local.set $i (i32.const 0))
-            (block $break_init
-                (loop $init_loop
-                    (i32.store
-                        (i32.mul (local.get $i) (i32.const 4))
-                        (local.get $flag)
-                    )
-                    (local.set $flag (call $sym_i32))
-                    (local.set $i (i32.add (local.get $i) (i32.const 1)))
-                    (br_if $break_init (i32.ge_u (local.get $i) (local.get $num_cells)))
-                    (br $init_loop)
+        (local $i i32)
+        (local.set $num_cells (i32.mul (global.get $w) (global.get $h)))
+        (local.set $i (i32.const 0))
+        (block $break_init
+            (loop $init_loop
+                (i32.store
+                    (i32.mul (local.get $i) (i32.const 4))
+                    (call $sym_cell)
                 )
+                (local.set $i (i32.add (local.get $i) (i32.const 1)))
+                (br_if $break_init (i32.ge_u (local.get $i) (local.get $num_cells)))
+                (br $init_loop)
             )
+        )
     )
 
     (func $cell_index (param $col i32) (param $row i32) (result i32)

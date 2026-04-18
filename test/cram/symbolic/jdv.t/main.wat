@@ -1,5 +1,6 @@
 (module
     (func $sym_i32 (import "ono" "i32_symbol") (result i32))
+    (func $sym_cell (import "ono" "sym_cell") (result i32))
     (func $mutation_factor (import "ono" "mutation_factor") (result i32))
     (func $get_num_contrainte (import "ono" "get_num_contrainte") (result i32))
 
@@ -7,7 +8,6 @@
     (global $h (mut i32) (i32.const 10))
     (memory 1)
 
-    
     (func $is_alive (param $col i32) (param $row i32) (result i32)
         (local $in_bounds i32)
         (local $cell_addr i32)
@@ -90,24 +90,22 @@
     ;; for tests
     (func $fill_symbolic
         (local $num_cells i32)
-            (local $i i32)
-            (local $flag i32)
-            (local.set $num_cells (i32.mul (global.get $w) (global.get $h)))
-            (local.set $flag (i32.const 0))
-            (local.set $i (i32.const 0))
-            (block $break_init
-                (loop $init_loop
-                    (i32.store
-                        (i32.mul (local.get $i) (i32.const 4))
-                        (local.get $flag)
-                    )
-                    (local.set $flag (call $sym_i32))
-                    (local.set $i (i32.add (local.get $i) (i32.const 1)))
-                    (br_if $break_init (i32.ge_u (local.get $i) (local.get $num_cells)))
-                    (br $init_loop)
+        (local $i i32)
+        (local.set $num_cells (i32.mul (global.get $w) (global.get $h)))
+        (local.set $i (i32.const 0))
+        (block $break_init
+            (loop $init_loop
+                (i32.store
+                    (i32.mul (local.get $i) (i32.const 4))
+                    (call $sym_cell)
                 )
+                (local.set $i (i32.add (local.get $i) (i32.const 1)))
+                (br_if $break_init (i32.ge_u (local.get $i) (local.get $num_cells)))
+                (br $init_loop)
             )
+        )
     )
+
 
     (func $cell_index (param $col i32) (param $row i32) (result i32)
         (i32.add
@@ -718,22 +716,55 @@
     (func $select_config
         (local $num i32)
         (local.set $num (call $get_num_contrainte))
-
-        (block $case_2
-            (block $case_1
-                (block $case_0
-                    local.get $num
-
-                    br_table $case_0 $case_1 $case_2 $case_0
-                )
-                (call $first_cell_alive)
-                return
-            )
-            (call $first_cell_dead)
-            return
+        
+        ;; 1. Au tour suivant, la cellule (1, 1) est vivante.
+        (if (i32.eq (local.get $num) (i32.const 1))
+            (then (call $first_cell_alive) (return))
         )
-        (call $at_least_one_alive)
-        return
+        ;; 2. Au tour suivant, la cellule (1, 1) est morte.
+        (if (i32.eq (local.get $num) (i32.const 2))
+            (then (call $first_cell_dead) (return))
+        )
+
+        ;; 3. Au tour suivant, il y a au moins une cellule vivante sur la grille.
+        (if (i32.eq (local.get $num) (i32.const 3))
+            (then (call $at_least_one_alive) (return))
+        )
+        ;; 5. Au tour suivant, toutes les cellules sont mortes.
+        (if (i32.eq (local.get $num) (i32.const 5))
+            (then (call $all_dead) (return))
+        )
+        ;; 7. Au tour suivant, il y a une colonne complète de cellules vivantes.
+        (if (i32.eq (local.get $num) (i32.const 7))
+            (then
+                (call $column_alive
+                    (i32.const 0)
+                    (i32.const 0)
+                    (i32.sub (global.get $h) (i32.const 1))
+                )
+                (return)
+            )
+        )
+        ;; 9. Au tour suivant, il existe une cellule isole.
+        (if (i32.eq (local.get $num) (i32.const 9))
+            (then (call $isolated_cell) (return))
+        )
+        ;; 11. Au tour suivant, il existe deux cellules vivantes côte à côte.
+        (if (i32.eq (local.get $num) (i32.const 11))
+            (then (call $two_adjacent_alive) (return))
+        )
+        ;; 13. Au tour suivant, il existe un motif carré de 2x2 cellules vivantes.
+        (if (i32.eq (local.get $num) (i32.const 13))
+            (then (call $square_2x2_alive) (return))
+        )
+        ;; 15. Au tour suivant, il y a une ligne/colonne en alternance.
+        (if (i32.eq (local.get $num) (i32.const 15))
+            (then (call $alternating_line) (return))
+        )
+        ;; 17. Au tour suivant, il y a une diagonale vivante de N cellules.
+        (if (i32.eq (local.get $num) (i32.const 17))
+            (then (call $diagonal_alive (i32.const 3)) (return))
+        )
     )
 
     (func $main

@@ -4,7 +4,7 @@
     (func $ask_for_b_value (import "ono" "ask_for_b_value") (result i32))
     (func $ask_for_c_value (import "ono" "ask_for_c_value") (result i32))
     (func $ask_for_d_value (import "ono" "ask_for_d_value") (result i32))
-
+    (func $print_i32 (import "ono" "print_i32") (param i32))
 
     (global $a (mut i32) (i32.const 0))
     (global $b (mut i32) (i32.const 0))
@@ -18,6 +18,12 @@
         (global.set $b (call $ask_for_b_value))
         (global.set $c (call $ask_for_c_value))
         (global.set $d (call $ask_for_d_value))
+
+        ;; (call $print_i32 (global.get $a))
+        ;; (call $print_i32 (global.get $b))
+        ;; (call $print_i32 (global.get $c))
+        ;; (call $print_i32 (global.get $d))
+
 
         (drop
             (call $is_solution (call $sym_i32) (global.get $a) (global.get $b) (global.get $c) (global.get $d))

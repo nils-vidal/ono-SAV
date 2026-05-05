@@ -4,8 +4,8 @@
     (func $mutation_factor (import "ono" "mutation_factor") (result i32))
     (func $get_num_contrainte (import "ono" "get_num_contrainte") (result i32))
 
-    (global $w (mut i32) (i32.const 3))
-    (global $h (mut i32) (i32.const 3))
+    (global $w (mut i32) (i32.const 4))
+    (global $h (mut i32) (i32.const 4))
     (memory 1)
 
     (func $is_alive (param $col i32) (param $row i32) (result i32)
@@ -340,10 +340,7 @@
             )
         )
 
-        (if
-            (
-                (i32.eq (local.get $alive_count) (local.get $num_cells))
-            )
+        (if (i32.eq (local.get $alive_count) (local.get $num_cells))
             (then unreachable)
         )
     )
@@ -360,10 +357,10 @@
         (block $break_check
             (loop $check_loop
                 ;; On charge l'état de la cellule i
-                (i32.load (i32.mul (local.get $i) (i32.const 4)))
-                (i32.eqz)
+                ;; (i32.load (i32.mul (local.get $i) (i32.const 4)))
                 
-                (if 
+                
+                (if (i32.eqz (i32.load (i32.mul (local.get $i) (i32.const 4))))
                     (then (
                         local.set $all_dead_flag (i32.const 1)
                     ) ) 
@@ -387,28 +384,28 @@
     ;; config 6
     (func $full_line_alive
         (local $alive_count i32)
-        (local $column i32)
+        (local $line i32)
         (local $x1 i32)
         (local $x2 i32)
         (local $i i32)
-        (local $num_cells i32)
 
-        (local.set $num_cells (i32.mul (global.get $w) (global.get $h)))
         (local.set $x1 (i32.const 0))
-        (local.set $x2 (i32.const 2))
-        (local.set $column (i32.const 2))
+        (local.set $x2 (i32.const 3))
+        (local.set $line (i32.const 3))
         
         (local.set $i (local.get $x1))
 
         (block $break_check
             (loop $check_loop
                 ;; On charge l'état de la cellule i
-                (call $is_alive (local.get $column) (local.get $i))
+                
                 
                 ;; Si la cellule est (morte)
-                (i32.eqz) 
-                (if 
-                    (then (unreachable) )
+                
+                (if (i32.eqz (call $is_alive (local.get $i) (local.get $line))) 
+                    (then (
+                        br $break_check
+                    ) )
                 )
 
                 ;; Incrémentation
@@ -417,8 +414,9 @@
 
                 ;; modif la condition de sortie + incrémenter $alive_count
 
-                (br_if $break_check (i32.gt_u (local.get $i) (local.get $x2)))
-                (br_if $break_check (i32.ge_u (local.get $i) (local.get $num_cells)))
+                (if (i32.gt_u (local.get $i) (local.get $x2))
+                    (then (unreachable))    
+                )
                 (br $check_loop)
             )
         )
@@ -482,7 +480,7 @@
                 )
 
                 (if (i32.gt_u (local.get $cpt) (local.get $n))
-                    (return)
+                    (then return)
                 )
 
                 ;; Incrémentation
@@ -496,10 +494,7 @@
             )
         )
 
-        (if
-            (
-                (i32.eq (local.get $cpt) (local.get $n))
-            )
+        (if (i32.eq (local.get $cpt) (local.get $n))
             (then unreachable)
         )
     )
@@ -607,8 +602,8 @@
     (func $one_cell_with_all_alive_nieghbors
         (local $i i32)
         (local $num_cells i32)
-        (local $column)
-        (local $row)
+        (local $column i32)
+        (local $row i32)
 
         (local.set $num_cells (i32.mul (global.get $w) (global.get $h)))
         (local.set $i (i32.const 0))
@@ -695,8 +690,8 @@
     (func $is_there_a_L_pattern
         (local $i i32)
         (local $num_cells i32)
-        (local $column)
-        (local $row)
+        (local $column i32)
+        (local $row i32)
 
         (local.set $num_cells (i32.mul (global.get $w) (global.get $h)))
         (local.set $i (i32.const 0))
@@ -707,10 +702,10 @@
                 (local.set $column (i32.rem_u (local.get $i) (global.get $w)))
                 (local.set $row (i32.div_u (local.get $i) (global.get $w)))
 
-                (if (
-                    i32.or
-                        (i32.ge_u (local.get $column) (i32.sub (local.get $w) (i32.const 1)))
-                        (i32.ge_u (local.get $row) (i32.sub (local.get $h) (i32.const 1)))
+                (if
+                    (i32.or
+                        (i32.ge_u (local.get $column) (i32.sub (global.get $w) (i32.const 1)))
+                        (i32.ge_u (local.get $row) (i32.sub (global.get $h) (i32.const 1)))
                     )
                 
                     (then 
@@ -806,9 +801,9 @@
     ;;config 14
     (func $alive_cell_was_dead
         (local $num_cells i32)
-        (local $current_cell)
-        (local $previous_cell)
-        (local $i)
+        (local $current_cell i32)
+        (local $previous_cell i32)
+        (local $i i32)
     
 
         (local.set $num_cells (i32.mul (global.get $w) (global.get $h)))
@@ -971,9 +966,9 @@
     ;; config 16
     (func $is_oscillator
         (local $num_cells i32)
-        (local $current_cell)
-        (local $previous_cell)
-        (local $i)
+        (local $current_cell i32)
+        (local $previous_cell i32)
+        (local $i i32)
     
 
         (local.set $num_cells (i32.mul (global.get $w) (global.get $h)))
@@ -1149,7 +1144,6 @@
         (if (i32.eq (local.get $num) (i32.const 2))
             (then (call $first_cell_dead) (return))
         )
-
         ;; 3. Au tour suivant, il y a au moins une cellule vivante sur la grille.
         (if (i32.eq (local.get $num) (i32.const 3))
             (then (call $at_least_one_alive) (return))
@@ -1232,5 +1226,5 @@
     )
 
     (start $main)
-    
+
 )

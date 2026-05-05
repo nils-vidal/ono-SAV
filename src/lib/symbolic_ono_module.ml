@@ -23,7 +23,7 @@ let sym_cell () : Kdo.Symbolic.I32.t Kdo.Symbolic.Choice.t =
   let* () = assume (ge_u sym (of_int 0)) None in
   return sym
 
-let ask_for_a_value () : Kdo.Symbolic.I64.t Kdo.Symbolic.Choice.t =
+let ask_for_a_value () : Kdo.Symbolic.I32.t Kdo.Symbolic.Choice.t =
   print_string "Entrez la valuer de a: ";
   let entry = read_int () in
   Kdo.Symbolic.Choice.return (Kdo.Symbolic.I32.of_int entry)

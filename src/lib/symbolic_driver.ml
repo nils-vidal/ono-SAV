@@ -1,8 +1,10 @@
 open Syntax
 module Interpret = Kdo.Interpret.Symbolic (Kdo.Interpret.Default_parameters)
 
-let run ~source_file ~contrainte =
+let run ~source_file ~contrainte ~largeur ~hauteur =
   Symbolic_ono_module.numero_contrainte := contrainte;
+  Symbolic_ono_module.largeur := largeur;
+  Symbolic_ono_module.hauteur := hauteur;
 
   (* sélection de la contrainte souhaitée *)
 

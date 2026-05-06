@@ -3,6 +3,9 @@
     (func $sym_cell (import "ono" "sym_cell") (result i32))
     (func $mutation_factor (import "ono" "mutation_factor") (result i32))
     (func $get_num_contrainte (import "ono" "get_num_contrainte") (result i32))
+    (func $get_width (import "ono" "get_width") (result i32))
+    (func $get_height (import "ono" "get_height") (result i32))
+
 
     (global $w (mut i32) (i32.const 10))
     (global $h (mut i32) (i32.const 10))
@@ -249,20 +252,20 @@
 
 
     ;; -------------------- CONFIG --------------------
-    (func $first_cell_alive ;; config 0
+    (func $first_cell_alive ;; config 1
         (if (i32.eq (call $is_alive (i32.const 1) (i32.const 1)) (i32.const 0))
             (then (unreachable)) ;; Si morte, ce chemin ne nous intéresse pas !
         )
     )
 
 
-    (func $first_cell_dead ;; config 1
+    (func $first_cell_dead ;; config 2
         (if (i32.ne (call $is_alive (i32.const 1) (i32.const 1)) (i32.const 0))
             (then (unreachable)) ;; Si morte, ce chemin ne nous intéresse pas !
         )
     )
 
-    (func $at_least_one_alive ;; config 2
+    (func $at_least_one_alive ;; config 3
         (local $i i32)
         (local $num_cells i32)
         (local $any_alive i32)
@@ -768,6 +771,9 @@
     )
 
     (func $main
+        (global.set $w (call $get_width))
+        (global.set $h (call $get_height))
+
         (call $fill_symbolic) ;; initialisation du board
         (call $step) ;; application d'un tour de boucle
         

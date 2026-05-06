@@ -9,13 +9,13 @@ let contraint_cmd =
   let info = Arg.info [ "contraint" ] in
   Arg.value (Arg.opt Arg.int (-1) info)
 
-let l = 
-  let info = Arg.info [ "height" ] in 
-  Arg.value (Arg.opt Arg.int (3) info)
+let l =
+  let info = Arg.info [ "height" ] in
+  Arg.value (Arg.opt Arg.int 3 info)
 
-let h = 
-  let info = Arg.info [ "width" ] in 
-  Arg.value (Arg.opt Arg.int (3) info)
+let h =
+  let info = Arg.info [ "width" ] in
+  Arg.value (Arg.opt Arg.int 3 info)
 
 let term =
   let open Term.Syntax in

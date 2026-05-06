@@ -4,6 +4,8 @@
     (func $mutation_factor (import "ono" "mutation_factor") (result i32))
     (func $get_num_contrainte (import "ono" "get_num_contrainte") (result i32))
     (func $print_i32 (import "ono" "print_i32") (param i32))
+    (func $get_width (import "ono" "get_width") (result i32))
+    (func $get_height (import "ono" "get_height") (result i32))
 
     (global $w (mut i32) (i32.const 5))
     (global $h (mut i32) (i32.const 5))
@@ -1204,6 +1206,9 @@
     )
 
     (func $main
+        (global.set $w (call $get_width))
+        (global.set $h (call $get_height))
+
         (call $fill_symbolic) ;; initialisation du board
         (call $step) ;; application d'un tour de boucle
         

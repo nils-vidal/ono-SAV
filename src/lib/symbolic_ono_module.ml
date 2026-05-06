@@ -1,6 +1,13 @@
 type extern_func = Kdo.Symbolic.Extern_func.extern_func
 
 let numero_contrainte = ref 0
+let largeur = ref 3
+let hauteur = ref 3
+
+let get_width () : Kdo.Symbolic.I32.t Kdo.Symbolic.Choice.t = 
+  Kdo.Symbolic.Choice.return (Kdo.Symbolic.I32.of_int (!largeur))
+let get_height () : Kdo.Symbolic.I32.t Kdo.Symbolic.Choice.t = 
+  Kdo.Symbolic.Choice.return (Kdo.Symbolic.I32.of_int (!hauteur))
 
 let print_i32 (n : Kdo.Symbolic.I32.t) : unit Kdo.Symbolic.Choice.t =
   Logs.app (fun m -> m "%a" Kdo.Symbolic.I32.pp n);
@@ -67,6 +74,9 @@ let m =
       ("ask_for_d_value", Extern_func (unit ^->. i64, ask_for_d_value));
       ("i64_symbol", Extern_func (unit ^->. i64, i64_symbol));
       ("get_num_contrainte", Extern_func (unit ^->. i32, get_num_contrainte));
+      ("get_width", Extern_func (unit ^->. i32, get_width));
+      ("get_height", Extern_func (unit ^->. i32, get_height));
+
     ]
   in
   {

@@ -3,9 +3,10 @@
     (func $sym_cell (import "ono" "sym_cell") (result i32))
     (func $mutation_factor (import "ono" "mutation_factor") (result i32))
     (func $get_num_contrainte (import "ono" "get_num_contrainte") (result i32))
+    (func $print_i32 (import "ono" "print_i32") (param i32))
 
-    (global $w (mut i32) (i32.const 4))
-    (global $h (mut i32) (i32.const 4))
+    (global $w (mut i32) (i32.const 3))
+    (global $h (mut i32) (i32.const 3))
     (memory 1)
 
     (func $is_alive (param $col i32) (param $row i32) (result i32)
@@ -47,10 +48,13 @@
                 (local.get $col)
             )
         )
+
+        ;; (call $print_i32 (local.get $index2d))
+
         (i32.load (i32.mul (local.get $index2d) (i32.const 4)))
     )
 
-    (func $count_alive_neighbours (param $col i32) (param $row i32) (result i32)
+(func $count_alive_neighbours (param $col i32) (param $row i32) (result i32)
         (call $is_alive ;; is_alive(col, row+1)
             (local.get $col) 
             (i32.add (local.get $row) (i32.const 1))
@@ -326,6 +330,7 @@
                     (then 
                         (local.set $alive_count (i32.add (local.get $alive_count) (i32.const 1)))
                     )
+                    (else (return))
                 )
 
 
@@ -383,42 +388,46 @@
     
     ;; config 6
     (func $full_line_alive
-        (local $alive_count i32)
         (local $line i32)
         (local $x1 i32)
         (local $x2 i32)
         (local $i i32)
+        (local $all_in_line_alive_flag i32)
 
         (local.set $x1 (i32.const 0))
-        (local.set $x2 (i32.const 3))
-        (local.set $line (i32.const 3))
+        (local.set $x2 (i32.sub (global.get $w) (i32.const 1)))
+        (local.set $line (i32.const 0))
         
         (local.set $i (local.get $x1))
 
+
+        (local.set $all_in_line_alive_flag (i32.const 0))
+
         (block $break_check
             (loop $check_loop
-                ;; On charge l'état de la cellule i
-                
-                
-                ;; Si la cellule est (morte)
-                
-                (if (i32.eqz (call $is_alive (local.get $i) (local.get $line))) 
-                    (then (
-                        br $break_check
-                    ) )
+            (call $is_alive (local.get $i) (local.get $line))
+
+            (if
+                (then
+                (local.set $all_in_line_alive_flag (i32.const 1))
                 )
-
-                ;; Incrémentation
-                (local.set $i (i32.add (local.get $i) (i32.const 1)))
-
-
-                ;; modif la condition de sortie + incrémenter $alive_count
-
-                (if (i32.gt_u (local.get $i) (local.get $x2))
-                    (then (unreachable))    
+                (else
+                (return)
                 )
-                (br $check_loop)
             )
+
+            ;; increment
+            (local.set $i (i32.add (local.get $i) (i32.const 1)))
+
+            (br_if $break_check
+                (i32.gt_s (local.get $i) (local.get $x2))
+            )
+
+            (br $check_loop)
+            )
+        )
+        (if (local.get $all_in_line_alive_flag)
+            (then (unreachable))
         )
     )
 
@@ -472,12 +481,13 @@
                 (local.set $current_cell (i32.load (i32.mul (local.get $i) (i32.const 4)))) ;; On charge l'état de la cellule i
 
                 ;; Si la cellule est vivante
-                (if (i32.eq
-                        (local.get $current_cell)
-                        (i32.const 1)
-                    )
-                    (then (local.set $cpt (i32.add (local.get $cpt) (i32.const 1))))
-                )
+                ;; (if (i32.eq
+                ;;         (local.get $current_cell)
+                ;;         (i32.const 1)
+                ;;     )
+                ;;     (then (local.set $cpt (i32.add (local.get $cpt) (i32.const 1))))
+                ;; )
+                (local.set $cpt (i32.add (local.get $cpt) (i32.eq (local.get $current_cell) (i32.const 1))))
 
                 (if (i32.gt_u (local.get $cpt) (local.get $n))
                     (then return)
@@ -969,12 +979,14 @@
         (local $current_cell i32)
         (local $previous_cell i32)
         (local $i i32)
+        (local $bool i32)
     
 
         (local.set $num_cells (i32.mul (global.get $w) (global.get $h)))
         (local.set $current_cell (i32.const 0))
         (local.set $previous_cell (i32.const 0))
         (local.set $i (i32.const 0))
+        (local.set $i (i32.const 1))
 
         (block $break_check
             (loop $check_loop
@@ -1018,9 +1030,7 @@
                     )
                 )
 
-                (if (i32.ne (local.get $previous_cell) (local.get $current_cell))
-                    (then unreachable)
-                )
+                (local.set $bool (i32.and (local.get $bool) (i32.eq (local.get $previous_cell) (local.get $current_cell))))
 
                 ;; Incrémentation
                 (local.set $i (i32.add (local.get $i) (i32.const 1)))
@@ -1032,6 +1042,8 @@
                 (br $check_loop)
             )
         )
+        
+        (if (local.get $bool) (then unreachable))
     )
 
     ;; 17. Au tour suivant, il y a une diagonale vivante de N cellules.
@@ -1175,7 +1187,7 @@
         (if (i32.eq (local.get $num) (i32.const 8))
             (then 
                 (call $exist_n_cell_alive 
-                    (i32.const 3) ;; test avec 3
+                    (i32.const 6) ;; test avec 3
                 ) 
                 (return)
             )

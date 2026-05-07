@@ -964,6 +964,12 @@ module Symbolic_i32 : sig
 
   val lt : t -> t -> Symbolic_boolean.t
 
+  val le_u : t -> t -> Symbolic_boolean.t
+
+  val eq : t -> t -> Symbolic_boolean.t
+
+  val ge_u : t -> t -> Symbolic_boolean.t
+
   val pp : t Fmt.t
 
   val symbol : Smtml.Symbol.t -> t
@@ -1016,7 +1022,11 @@ module Symbolic_choice : sig
 
   val bind : 'a t -> ('a -> 'b t) -> 'b t
 
+  val ( let* ) : 'a t -> ('a -> 'b t) -> 'b t
+
   val map : 'a t -> ('a -> 'b) -> 'b t
+
+  val assume : Symbolic_boolean.t -> int option -> unit t
 
   val trap : Result.err -> 'a t
 end

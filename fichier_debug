@@ -1,0 +1,7 @@
+model {
+  symbol symbol_0 i32 0
+  symbol symbol_1 i32 1
+  symbol symbol_2 i32 1
+  symbol symbol_3 i32 1
+}
+breadcrumbs 0 1 1 1 1 1 1 1

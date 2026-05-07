@@ -1,5 +1,19 @@
 # Changelog
 
+## 1.0 - 2026-05-07
+Version finale du projet
+
+### Added
+- ajout de toutes les configurations initiales listés dans le REPORT.md
+- script permettant de relier la sortie du mode symbolique a l'entrée du mode concrete 
+- REPORT.md rempli
+
+
+### Fix
+- optimisation du jeu de la vie en mode symbolique (auparavant maximum 3)
+- correction du test polynome.wat dans la partie symbolique
+
+
 ## 0.4 - 2026-04-15
 
 ### Added

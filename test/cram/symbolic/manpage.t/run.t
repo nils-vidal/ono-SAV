@@ -4,11 +4,19 @@ Test the output of the man page:
          ono-symbolic
   
   SYNOPSIS
-         ono symbolic [OPTION]… FILE
+         ono symbolic [--contraint=INT] [--height=INT] [--width=INT] [OPTION]…
+         FILE
   
   ARGUMENTS
          FILE (required)
              Source file to analyze.
+  
+  OPTIONS
+         --contraint=INT (absent=-1)
+  
+         --height=INT (absent=3)
+  
+         --width=INT (absent=3)
   
   COMMON OPTIONS
          --color=WHEN (absent=auto)
@@ -65,3 +73,4 @@ Test the output of the man page:
   SEE ALSO
          ono(1)
   
+

@@ -95,7 +95,6 @@ let init () : (unit, _) Result.t =
       Ok ()
     with e -> raise (InternalError (Printexc.to_string e))
 
-(*let load_file () : (Kdo.)*)
 let load_next_point () : (Kdo.Concrete.I32.t * Kdo.Concrete.I32.t, _) Result.t =
   let open Kdo.Concrete.I32 in
   if !index_of_data >= List.length !data_from_file then

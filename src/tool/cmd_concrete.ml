@@ -21,7 +21,7 @@ let start_with =
 
 let use_gui =
   let info = Arg.info [ "use_gui" ] in
-  Arg.value (Arg.opt Arg.bool false info)
+  Arg.value (Arg.flag info)
 
 let info = Cmd.info "concrete" ~exits
 

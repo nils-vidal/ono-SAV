@@ -42,7 +42,7 @@ dune exec -- ono symbolic --contraint {numero_contrainte} --width {largeur} --he
 2. `--steps {n}` : permet de préciser combien de tour on veut avant de terminer le programme
 3. `--n_printed {n}` : permet d’afficher dans le terminal les n derniers tour du programme. Attention doit forcément être activé avec `--steps`.
 4. `--start_with {filename}` : permet de lancer le jeu de la vie en commençant à partir d’une configuration précise
-5. `--use_gui {bool}` : permet d’utiliser l’interface graphique au lieu de l’interface textuelle
+5. `--use_gui` : permet d’utiliser l’interface graphique au lieu de l’interface textuelle
   
 ### Symbolic
 1. `--contraint {n}` : permet de sélectionner la contrainte que l’on recherche parmis la liste des contraintes plus basse, en la désignant par son numéro (par défaut 1)

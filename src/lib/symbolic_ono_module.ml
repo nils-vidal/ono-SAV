@@ -56,8 +56,8 @@ let i64_symbol () : Kdo.Symbolic.I64.t Kdo.Symbolic.Choice.t =
     Kdo.Symbolic.I64.symbol
 
 let get_num_contrainte () : Kdo.Symbolic.I32.t Kdo.Symbolic.Choice.t =
-  if !numero_contrainte < 0 then
-    failwith "Le numéro de contrainte doit être compris entre 0 et 10"
+  if !numero_contrainte < 1 || !numero_contrainte > 17 then
+    failwith "Le numéro de contrainte doit être compris entre 1 et 17"
   else Kdo.Symbolic.Choice.return (Kdo.Symbolic.I32.of_int !numero_contrainte)
 
 let m =

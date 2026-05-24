@@ -10,6 +10,8 @@ Nous avons réalisé tout ce qui était demandé dans le sujet, à l'exception d
 - Adaptation au langage WASM
 - Difficulté sur la compréhension de l'arborescence du projet
 - Problème avec la valeur trouvée par polynome.wat (qui était égale à max_int pendant une longue période)
+- Affichage lent des cellules pour l'interface textuelle
+- Difficulté à afficher de grande grille pour la partie symbolique (avant la modifications des if selon vos conseils) 
 
 ##   Lancement du Jeu de la Vie
 Pour lancer le jeu en mode concrete :

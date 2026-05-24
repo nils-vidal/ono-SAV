@@ -7,7 +7,11 @@ Nous avons réalisé tout ce qui était demandé dans le sujet, à l'exception d
 - Script permettant de passer d'un résultat d'une execution symbolique à un affichage visuel en prenant en configuration de départ le résultat.
 
 ## Difficulté rencontrés : 
+- Adaptation au langage WASM
 - Difficulté sur la compréhension de l'arborescence du projet
+- Problème avec la valeur trouvée par polynome.wat (qui était égale à max_int pendant une longue période)
+- Affichage lent des cellules pour l'interface textuelle
+- Difficulté à afficher de grande grille pour la partie symbolique (avant la modifications des if selon vos conseils) 
 
 ##   Lancement du Jeu de la Vie
 Pour lancer le jeu en mode concrete :
@@ -40,7 +44,7 @@ dune exec -- ono symbolic --contraint {numero_contrainte} --width {largeur} --he
 2. `--steps {n}` : permet de préciser combien de tour on veut avant de terminer le programme
 3. `--n_printed {n}` : permet d’afficher dans le terminal les n derniers tour du programme. Attention doit forcément être activé avec `--steps`.
 4. `--start_with {filename}` : permet de lancer le jeu de la vie en commençant à partir d’une configuration précise
-5. `--use_gui {bool}` : permet d’utiliser l’interface graphique au lieu de l’interface textuelle
+5. `--use_gui` : permet d’utiliser l’interface graphique au lieu de l’interface textuelle
   
 ### Symbolic
 1. `--contraint {n}` : permet de sélectionner la contrainte que l’on recherche parmis la liste des contraintes plus basse, en la désignant par son numéro (par défaut 1)
@@ -65,3 +69,7 @@ dune exec -- ono symbolic --contraint {numero_contrainte} --width {largeur} --he
 15. Au tour suivant, il y a une ligne/colonne avec une alternance de cellules vivantes/mortes.
 16. Au tour suivant, il y a un motif en clignotant (un oscillateur de période 2).
 17. Au tour suivant, il y a une diagonale vivante de 3 cellules.
+
+### Aparté sur les polynômes
+
+Comme indiqué dans les section préliminaire, il est possible de générer n'importe quel polynome de degré 3 en fonction de la demande de l'utilisateur, et de trouver une solution possible pour ce même polynome.

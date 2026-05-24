@@ -13,4 +13,7 @@ let clear_screen () =
   flush stdout;
   Buffer.clear buffer
 
-let cleanup () = ()
+let cleanup () =
+  Buffer.output_buffer stdout buffer;
+  flush stdout;
+  Buffer.clear buffer

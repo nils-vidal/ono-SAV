@@ -7,7 +7,9 @@ Nous avons réalisé tout ce qui était demandé dans le sujet, à l'exception d
 - Script permettant de passer d'un résultat d'une execution symbolique à un affichage visuel en prenant en configuration de départ le résultat.
 
 ## Difficulté rencontrés : 
+- Adaptation au langage WASM
 - Difficulté sur la compréhension de l'arborescence du projet
+- Problème avec la valeur trouvée par polynome.wat (qui était égale à max_int pendant une longue période)
 
 ##   Lancement du Jeu de la Vie
 Pour lancer le jeu en mode concrete :
@@ -65,3 +67,7 @@ dune exec -- ono symbolic --contraint {numero_contrainte} --width {largeur} --he
 15. Au tour suivant, il y a une ligne/colonne avec une alternance de cellules vivantes/mortes.
 16. Au tour suivant, il y a un motif en clignotant (un oscillateur de période 2).
 17. Au tour suivant, il y a une diagonale vivante de 3 cellules.
+
+### Aparté sur les polynômes
+
+Comme indiqué dans les section préliminaire, il est possible de générer n'importe quel polynome de degré 3 en fonction de la demande de l'utilisateur, et de trouver une solution possible pour ce même polynome.

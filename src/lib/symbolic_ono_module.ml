@@ -32,22 +32,22 @@ let sym_cell () : Kdo.Symbolic.I32.t Kdo.Symbolic.Choice.t =
   return sym
 
 let ask_for_a_value () : Kdo.Symbolic.I32.t Kdo.Symbolic.Choice.t =
-  print_string "Entrez la valuer de a: ";
+  print_string "Entrez la valeur de a: ";
   let entry = read_int () in
   Kdo.Symbolic.Choice.return (Kdo.Symbolic.I32.of_int entry)
 
 let ask_for_b_value () : Kdo.Symbolic.I32.t Kdo.Symbolic.Choice.t =
-  print_string "Entrez la valuer de b: ";
+  print_string "Entrez la valeur de b: ";
   let entry = read_int () in
   Kdo.Symbolic.Choice.return (Kdo.Symbolic.I32.of_int entry)
 
 let ask_for_c_value () : Kdo.Symbolic.I32.t Kdo.Symbolic.Choice.t =
-  print_string "Entrez la valuer de c: ";
+  print_string "Entrez la valeur de c: ";
   let entry = read_int () in
   Kdo.Symbolic.Choice.return (Kdo.Symbolic.I32.of_int entry)
 
 let ask_for_d_value () : Kdo.Symbolic.I32.t Kdo.Symbolic.Choice.t =
-  print_string "Entrez la valuer de d: ";
+  print_string "Entrez la valeur de d: ";
   let entry = read_int () in
   Kdo.Symbolic.Choice.return (Kdo.Symbolic.I32.of_int entry)
 
@@ -56,8 +56,8 @@ let i64_symbol () : Kdo.Symbolic.I64.t Kdo.Symbolic.Choice.t =
     Kdo.Symbolic.I64.symbol
 
 let get_num_contrainte () : Kdo.Symbolic.I32.t Kdo.Symbolic.Choice.t =
-  if !numero_contrainte < 0 then
-    failwith "Le numéro de contrainte doit être compris entre 0 et 10"
+  if !numero_contrainte < 1 || !numero_contrainte > 17 then
+    failwith "Le numéro de contrainte doit être compris entre 1 et 17"
   else Kdo.Symbolic.Choice.return (Kdo.Symbolic.I32.of_int !numero_contrainte)
 
 let m =
